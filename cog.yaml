@@ -1,12 +1,23 @@
+# cog.yaml --------------------------------------------------------------
 build:
   gpu: true
   cuda: "12.2"
   python_version: "3.10"
+
   system_packages:
     - ffmpeg
-  python_packages:
-    - torch==2.2.2
-    - torchaudio==2.2.2
-    - soundfile>=0.13.1
-    - "git+https://github.com/nari-labs/dia.git"
+    - git                   # needed for the GitHub install below
+
+  # leave this empty – we're doing manual installs in `run`
+  python_packages: []
+
+  # ⬇️ every line here runs like a Dockerfile RUN instruction
+  run:
+    # 1. install CUDA‑12.2 wheels that actually exist
+    - pip install torch==2.2.2+cu122 torchaudio==2.2.2+cu122 \
+        -f https://download.pytorch.org/whl/cu122
+
+    # 2. install Dia and nari‑tts **without** their torch dependency
+    - pip install --no-deps git+https://github.com/nari-labs/dia.git
+
 predict: "predict.py:Predictor"
