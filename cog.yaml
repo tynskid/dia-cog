@@ -3,6 +3,9 @@ build:
   cuda: "12.2"
   python_version: "3.10"
 
+  environment:
+    NUMPY_EXPERIMENTAL_ARRAY_FUNCTION: "1"   # silences NumPy‑ABI warning in torch 2.2.x
+
   system_packages:
     - ffmpeg
     - git
@@ -11,18 +14,24 @@ build:
   python_packages: []
 
   run:
-    # 0) pin NumPy first so PyTorch links against 1.26 ABI
+    # 0) Pin NumPy ABI‑compatible with Torch 2.2
     - pip install numpy==1.26.4
 
-    # 1) PyTorch 2.2.2 + CUDA 12.1 wheels
+    # 1) Install PyTorch 2.2.2 + CUDA 12.1 wheels
     - pip install --extra-index-url https://download.pytorch.org/whl/cu121 \
         torch==2.2.2+cu121 torchaudio==2.2.2+cu121
 
-    # 2) remaining Python deps
-    - pip install soundfile descript-audio-codec>=1.0.0
+    # 2) Dia’s non‑torch runtime stack
+    - pip install \
+        soundfile \
+        descript-audio-codec>=1.0.0 \
+        huggingface_hub>=0.22 \
+        transformers>=4.39 \
+        accelerate>=0.28 \
+        pydantic>=2.11 \
+        tqdm packaging typing_extensions
 
-    # 3) Dia itself (skip its too‑new torch constraint)
+    # 3) Dia itself (skip its torch>=2.6 pin)
     - pip install --no-deps git+https://github.com/nari-labs/dia.git
 
 predict: "predict.py:Predictor"
-
