@@ -6,13 +6,20 @@ build:
   system_packages:
     - ffmpeg
     - git
+    - libsndfile1          # ← gives soundfile its native backend
 
-  python_packages: []
+  python_packages: []      # keep pip installs explicit below
 
   run:
+    # PyTorch + CUDA 12.1 wheels
     - pip install --extra-index-url https://download.pytorch.org/whl/cu121 \
         torch==2.2.2+cu121 torchaudio==2.2.2+cu121
+
+    # Core Python deps we missed
+    - pip install numpy soundfile
+
+    # Dia + nari‑tts without their torch dep
     - pip install --no-deps git+https://github.com/nari-labs/dia.git
 
-# ⬇️  Make sure this line exists and is flush‑left
 predict: "predict.py:Predictor"
+
