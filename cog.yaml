@@ -10,9 +10,9 @@ build:
   python_packages: []
 
   run:
-    # 1) install PyTorch 2.2.2 + CUDA 12.1 wheels
     - pip install --extra-index-url https://download.pytorch.org/whl/cu121 \
         torch==2.2.2+cu121 torchaudio==2.2.2+cu121
-
-    # 2) install Dia & its helper libs without their (too‑new) torch dep
     - pip install --no-deps git+https://github.com/nari-labs/dia.git
+
+# ⬇️  Make sure this line exists and is flush‑left
+predict: "predict.py:Predictor"
