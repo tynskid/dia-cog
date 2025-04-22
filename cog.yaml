@@ -3,8 +3,8 @@ build:
   cuda: "12.2"
   python_version: "3.10"
 
-  environment:
-    NUMPY_EXPERIMENTAL_ARRAY_FUNCTION: "1"   # silences NumPy‑ABI warning in torch 2.2.x
+#  environment:
+#    NUMPY_EXPERIMENTAL_ARRAY_FUNCTION: "1"   # silences NumPy‑ABI warning in torch 2.2.x
 
   system_packages:
     - ffmpeg
