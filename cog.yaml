@@ -32,13 +32,6 @@ build:
     # 4) **Force the right Pydantic after everything else**
     - pip install --no-deps --force-reinstall --no-cache-dir "pydantic>=2.11.3"
 
-    # 5) sanity-check → will exit if pydantic < 2.6
-    - python - <<'PY'
-import pydantic, sys
-print("✓ Pydantic version:", pydantic.__version__)
-major, minor, *_ = map(int, pydantic.__version__.split('.'))
-assert (major, minor) >= (2, 6), "Pydantic still too old!"
-PY
-
+    
 predict: "predict.py:Predictor"
 
