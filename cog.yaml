@@ -3,33 +3,32 @@ build:
   cuda: "12.2"
   python_version: "3.10"
 
+  # quiets a benign NumPy 1.x → 2.x warning in PyTorch 2.2.x
  
+  # minimal OS packages
   system_packages:
     - ffmpeg
     - git
     - libsndfile1
 
+  # we install everything explicitly in `run:`
   python_packages: []
 
   run:
-    # 0) Torch-compatible NumPy
+    # 0) NumPy version that matches the ABI used to compile PyTorch 2.2.x
     - pip install numpy==1.26.4
 
-    # 1) Torch + CUDA 12.1 wheels
-    - pip install --extra-index-url https://download.pytorch.org/whl/cu121 \
-        torch==2.2.2+cu121 torchaudio==2.2.2+cu121
+    # 1) Latest PyTorch wheels that actually exist today (CUDA 12.1 tag)
+    - pip install --extra-index-url https://download.pytorch.org/whl/cu121 torch==2.2.2+cu121 torchaudio==2.2.2+cu121
 
-    # 2) Dia runtime stack (no pydantic here)
-    - pip install soundfile descript-audio-codec>=1.0.0 \
-        huggingface_hub>=0.30.2 transformers>=4.39 \
-        accelerate>=0.28 tqdm packaging typing_extensions
+    # 2) Dia’s pure-Python runtime dependencies
+    - pip install soundfile descript-audio-codec>=1.0.0 huggingface_hub>=0.30.2 transformers>=4.39 accelerate>=0.28 tqdm packaging typing_extensions
 
-    # 3) Dia itself (skip its torch pin)
+    # 3) Dia itself (skip its too-new torch pin)
     - pip install --no-deps git+https://github.com/nari-labs/dia.git
 
-    # 4) **Force the right Pydantic after everything else**
-    - pip install --no-deps --force-reinstall --no-cache-dir "pydantic>=2.11.3"
+    # 4) Make absolutely sure we end up with Pydantic ≥ 2.6 (needs pydantic-core)
+    - pip install --force-reinstall --no-cache-dir "pydantic-core>=2.16.2" "pydantic>=2.11.3"
 
-    
 predict: "predict.py:Predictor"
 
