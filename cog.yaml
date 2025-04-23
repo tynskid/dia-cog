@@ -25,10 +25,10 @@ build:
     - pip install soundfile descript-audio-codec>=1.0.0 huggingface_hub>=0.30.2 transformers>=4.39 accelerate>=0.28 tqdm packaging typing_extensions
 
     # 3) Dia itself (skip its too-new torch pin)
-    - pip install --no-deps git+https://github.com/nari-labs/dia.git
+    - pip install git+https://github.com/nari-labs/dia.git
 
     # 4) Make absolutely sure we end up with Pydantic ≥ 2.6 (needs pydantic-core)
-    - pip install --force-reinstall --no-cache-dir "pydantic-core>=2.16.2" "pydantic>=2.11.3"
+    #- pip install --force-reinstall --no-cache-dir "pydantic-core>=2.16.2" "pydantic>=2.11.3"
 
 predict: "predict.py:Predictor"
 
