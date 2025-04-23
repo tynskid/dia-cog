@@ -20,6 +20,6 @@ build:
         huggingface_hub>=0.30.2 transformers>=4.39 \
         accelerate>=0.28 tqdm packaging typing_extensions # Dia runtime deps
     - pip install --no-deps git+https://github.com/nari-labs/dia.git  # Dia itself
-    - pip install --upgrade "pydantic>=2.11.3"            # ensure BeforeValidator
+    - pip install pydantic
 
 predict: "predict.py:Predictor"
