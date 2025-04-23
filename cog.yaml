@@ -3,23 +3,42 @@ build:
   cuda: "12.2"
   python_version: "3.10"
 
-  # environment variables available inside the container
+  environment:
+    NUMPY_EXPERIMENTAL_ARRAY_FUNCTION: "1"
 
   system_packages:
     - ffmpeg
     - git
     - libsndfile1
 
-  python_packages: []        # we install everything explicitly below
+  python_packages: []
 
   run:
-    - pip install numpy==1.26.4                           # ABI‑compatible NumPy
+    # 0) Torch-compatible NumPy
+    - pip install numpy==1.26.4
+
+    # 1) Torch + CUDA 12.1 wheels
     - pip install --extra-index-url https://download.pytorch.org/whl/cu121 \
-        torch==2.2.2+cu121 torchaudio==2.2.2+cu121        # PyTorch wheels
+        torch==2.2.2+cu121 torchaudio==2.2.2+cu121
+
+    # 2) Dia runtime stack (no pydantic here)
     - pip install soundfile descript-audio-codec>=1.0.0 \
         huggingface_hub>=0.30.2 transformers>=4.39 \
-        accelerate>=0.28 tqdm packaging typing_extensions # Dia runtime deps
-    - pip install --no-deps git+https://github.com/nari-labs/dia.git  # Dia itself
-    - pip install pydantic
+        accelerate>=0.28 tqdm packaging typing_extensions
+
+    # 3) Dia itself (skip its torch pin)
+    - pip install --no-deps git+https://github.com/nari-labs/dia.git
+
+    # 4) **Force the right Pydantic after everything else**
+    - pip install --no-deps --force-reinstall --no-cache-dir "pydantic>=2.11.3"
+
+    # 5) sanity-check → will exit if pydantic < 2.6
+    - python - <<'PY'
+import pydantic, sys
+print("✓ Pydantic version:", pydantic.__version__)
+major, minor, *_ = map(int, pydantic.__version__.split('.'))
+assert (major, minor) >= (2, 6), "Pydantic still too old!"
+PY
 
 predict: "predict.py:Predictor"
+
