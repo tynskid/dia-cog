@@ -16,10 +16,10 @@ build:
 
   run:
     # 0) NumPy version that matches the ABI used to compile PyTorch 2.2.x
-    - pip install numpy==1.26.4
+    #- pip install numpy==1.26.4
 
     # 1) Latest PyTorch wheels that actually exist today (CUDA 12.1 tag)
-    - pip install --extra-index-url https://download.pytorch.org/whl/cu121 torch==2.2.2+cu121 torchaudio==2.2.2+cu121
+    #- pip install --extra-index-url https://download.pytorch.org/whl/cu121 torch==2.2.2+cu121 torchaudio==2.2.2+cu121
 
     # 2) Dia’s pure-Python runtime dependencies
     - pip install soundfile descript-audio-codec>=1.0.0 huggingface_hub>=0.30.2 transformers>=4.39 accelerate>=0.28 tqdm packaging typing_extensions
